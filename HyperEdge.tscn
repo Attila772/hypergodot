@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://nx4jmlyy1jhv"]
+
+[ext_resource type="Script" path="res://HyperEdge.gd" id="1_rm3x8"]
+
+[node name="HyperEdge" type="Node2D"]
+script = ExtResource("1_rm3x8")
