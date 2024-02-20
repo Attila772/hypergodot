@@ -38,7 +38,6 @@ func populate_edge_data():
 	var hyperedge_scene = load("res://HyperEdge.tscn")
 	for node_id in nodes:
 		var node_edges = nodes[node_id].edges
-		print(nodes)
 		var circle_ref = get_node(str(node_id)) # Assuming this gets a node instance with 'offset_circles' available
 		var offset_circles = circle_ref.offset_circles # List of radii for offset circles
 		for edge_index in range(node_edges.size()):
@@ -62,16 +61,10 @@ func populate_edge_data():
 				var radius = edge_data["radii"][i]
 				node_radii_pairs[nodeid] = radius
 			hyperedge_instance.nodes = node_radii_pairs
-			
 			var color = Color(randf(), randf(), randf(), 0.5)  # Generate a random color
 			hyperedge_instance.color = color
 			add_child(hyperedge_instance)
-		   
 			
-		
-		
-
-
 
 func _ready():
 	nodes = read_file("patterns.txt")

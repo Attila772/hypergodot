@@ -19,7 +19,9 @@ func _input(event):
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
 				var mouse_pos = get_viewport().get_mouse_position()
-				if get_rect().has_point(mouse_pos):
+				var mouse_pos2 = get_global_mouse_position() # Adjusted line
+				print(mouse_pos2, get_rect().position)
+				if get_rect().has_point(mouse_pos2):
 					dragging = true
 					drag_offset = mouse_pos - get_position()
 					emit_signal("node_drag_started", self)

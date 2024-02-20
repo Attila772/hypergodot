@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://2f8fvrck2f38"]
+[gd_scene load_steps=3 format=3 uid="uid://2f8fvrck2f38"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_1hwno"]
+[ext_resource type="Script" path="res://Camera2D.gd" id="2_iiqxp"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_1hwno")
@@ -19,3 +20,6 @@ visible = false
 offset_right = 195.0
 offset_bottom = 401.0
 color = Color(0.0980392, 0.0980392, 0.0980392, 1)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("2_iiqxp")
