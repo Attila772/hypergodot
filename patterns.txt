@@ -1,45 +1,33 @@
-333 335 313 #SUP: 723
-333 335 #SUP: 853
-333 270 #SUP: 1158
-239 #SUP: 1384
-333 239 #SUP: 690
-333 264 293 260 295 325 #SUP: 855
-333 280 315 293 295 325 #SUP: 970
-333 280 293 295 325 #SUP: 1052
-333 264 293 295 325 #SUP: 1151
-333 293 295 325 #SUP: 2091
-333 264 293 260 295 #SUP: 856
-333 280 315 293 295 #SUP: 971
-333 280 293 295 #SUP: 1055
-333 264 293 295 #SUP: 1156
-333 293 295 #SUP: 2103
-333 264 293 260 #SUP: 866
-264 260 #SUP: 2144
-333 264 260 #SUP: 1021
-264 280 266 #SUP: 760
-264 266 #SUP: 2291
-333 264 266 #SUP: 1431
-333 280 315 293 #SUP: 994
-333 280 293 #SUP: 1105
-333 264 293 #SUP: 1209
-333 293 #SUP: 2303
-280 315 282 #SUP: 794
-280 282 #SUP: 953
-333 282 #SUP: 802
-282 #SUP: 2542
-264 280 315 #SUP: 822
-333 264 280 315 #SUP: 729
-333 280 315 #SUP: 2176
-280 315 #SUP: 3522
-290 #SUP: 3635
-264 280 #SUP: 1307
-333 264 280 #SUP: 938
-333 280 #SUP: 2832
-240 280 #SUP: 735
-280 #SUP: 5734
-333 264 #SUP: 2879
-240 264 #SUP: 1397
-264 #SUP: 8897
-333 #SUP: 9224
-240 333 #SUP: 1410
-240 #SUP: 14458
+Environment_and_Natural_Resources Pollution_Management #SUP: 1
+Climate_Change Climate_Science #SUP: 1
+Energy_and_Extractives Renewable_Energy Energy_Efficiency #SUP: 1
+Energy_and_Extractives Climate_Change Renewable_Energy Energy_Efficiency #SUP: 1
+Energy_and_Extractives Climate_Change Energy_Efficiency #SUP: 1
+Energy_and_Extractives Energy_Efficiency #SUP: 1
+Climate_Change Climate_Finance #SUP: 1
+Energy_and_Extractives Climate_Change Climate_Change_Mitigation Short-lived_Climate_Pollutants_(SLCPs) Methane Oil_and_Gas_Policy,_Strategy_and_Institutions #SUP: 1
+Energy_and_Extractives Climate_Change Climate_Change_Mitigation Oil_and_Gas_Policy,_Strategy_and_Institutions #SUP: 1
+Energy_and_Extractives Renewable_Energy Oil_and_Gas_Policy,_Strategy_and_Institutions #SUP: 1
+Energy_and_Extractives Climate_Change Renewable_Energy Oil_and_Gas_Policy,_Strategy_and_Institutions #SUP: 1
+Energy_and_Extractives Climate_Change Oil_and_Gas_Policy,_Strategy_and_Institutions #SUP: 1
+Energy_and_Extractives Oil_and_Gas_Policy,_Strategy_and_Institutions #SUP: 1
+Environment_and_Natural_Resources Forests #SUP: 1
+Climate_Change Environment_and_Natural_Resources Forests #SUP: 1
+Energy_and_Extractives Climate_Change Renewable_Energy Climate_Change_Mitigation Short-lived_Climate_Pollutants_(SLCPs) Methane #SUP: 1
+Climate_Change Climate_Change_Mitigation Short-lived_Climate_Pollutants_(SLCPs) Methane #SUP: 1
+Energy_and_Extractives Climate_Change Climate_Change_Mitigation Short-lived_Climate_Pollutants_(SLCPs) Methane #SUP: 1
+Energy_and_Extractives Climate_Change Renewable_Energy Climate_Change_Mitigation Short-lived_Climate_Pollutants_(SLCPs) #SUP: 1
+Climate_Change Climate_Change_Mitigation Short-lived_Climate_Pollutants_(SLCPs) #SUP: 1
+Energy_and_Extractives Climate_Change Climate_Change_Mitigation Short-lived_Climate_Pollutants_(SLCPs) #SUP: 1
+Energy_and_Extractives Climate_Change Renewable_Energy Climate_Change_Mitigation #SUP: 1
+Climate_Change Climate_Change_Mitigation #SUP: 1
+Energy_and_Extractives Climate_Change Climate_Change_Mitigation #SUP: 1
+Environment_and_Natural_Resources Natural_Resource_Management_ #SUP: 1
+Climate_Change Natural_Resource_Management_ #SUP: 1
+Energy_and_Extractives Renewable_Energy #SUP: 1
+Energy_and_Extractives Climate_Change Renewable_Energy #SUP: 1
+Environment_and_Natural_Resources Investment_Climate #SUP: 1
+Climate_Change Environment_and_Natural_Resources #SUP: 1
+Energy_and_Extractives Environment_and_Natural_Resources #SUP: 1
+Energy_and_Extractives Health_Emergency_Preparedness_and_Disaster_Response #SUP: 1
+Energy_and_Extractives Climate_Change #SUP: 1
