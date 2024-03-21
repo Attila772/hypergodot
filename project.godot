@@ -19,6 +19,10 @@ config/icon="res://icon.svg"
 
 project/assembly_name="Hypergodot"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/kanban_tasks/plugin.cfg")
+
 [input]
 
 left_click={

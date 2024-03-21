@@ -7,11 +7,10 @@
 script = ExtResource("1_1hwno")
 
 [node name="ColorRect" type="ColorRect" parent="."]
-offset_left = -1010.0
-offset_top = -703.0
-offset_right = 2675.0
-offset_bottom = 1600.0
-color = Color(0.952941, 0.952941, 0.952941, 1)
+offset_left = -8559.0
+offset_top = -6223.0
+offset_right = 9085.0
+offset_bottom = 6156.0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

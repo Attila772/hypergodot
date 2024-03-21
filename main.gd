@@ -61,8 +61,10 @@ func populate_edge_data():
 				var radius = edge_data["radii"][i]
 				node_radii_pairs[nodeid] = radius
 			hyperedge_instance.nodes = node_radii_pairs
-			var color = Color(randf(), randf(), randf(), 0.5)  # Generate a random color
+			var color = Color(randf(), randf(), randf(), 0.3)  # Generate a random color
 			hyperedge_instance.color = color
+			hyperedge_instance.add_to_group("edges")
+			hyperedge_instance.name = str(edge_id)
 			add_child(hyperedge_instance)
 			
 
@@ -70,6 +72,8 @@ func _ready():
 	nodes = read_file("patterns.txt")
 	create_nodes(nodes)
 	populate_edge_data()
+	apply_force_directed_layout(10,150.0,1000.0)
+	#apply_circular_layout(500)
 	pass # Replace with function body.
 
 func read_file(path):
@@ -106,3 +110,59 @@ func read_file(path):
 func _process(delta):
 	pass
 	
+func apply_force_directed_layout(iterations: int, repulsion_force: float, spring_length: float):
+	var node_positions = {} # Dictionary to store node positions temporarily
+	var forces = {} # Dictionary to store forces applied on nodes
+	
+	for node in get_children():
+		if node.is_in_group("nodes"): # Assuming your nodes are added to a "nodes" group
+			node_positions[node.node_id] = node.position
+			forces[node.node_id] = Vector2()
+
+
+	for i in range(iterations):
+		# Calculate repulsive forces
+		for id_1 in node_positions.keys():
+			for id_2 in node_positions.keys():
+				if id_1 != id_2:
+					var delta = node_positions[id_1] - node_positions[id_2]
+					var distance = delta.length()
+					if distance > 0: # Avoid division by zero
+						var repulsive_force = repulsion_force / distance
+						forces[id_1] += delta.normalized() * repulsive_force
+
+		# Calculate spring forces (attractive forces) based on edges
+		for edge_id in edges:
+			for node_id in edges[edge_id]["nodes"]:
+				for other_node_id in edges[edge_id]["nodes"]:
+					if node_id != other_node_id:
+						var delta = node_positions[node_id] - node_positions[other_node_id]
+						var distance = delta.length() - spring_length
+						var spring_force = -distance # Assuming a simple linear spring
+						forces[node_id] += delta.normalized() * spring_force
+
+		# Apply forces to node positions
+		for node_id in node_positions.keys():
+			node_positions[node_id] += forces[node_id]/20
+			forces[node_id] = Vector2() # Reset forces for the next iteration
+
+	# Update actual node positions
+	for node in get_children():
+		if node.is_in_group("nodes"):
+			node.position = node_positions[node.node_id]
+			
+			
+func apply_circular_layout(radius: float):
+	var center = get_viewport_rect().size / 2
+	var nodes = [] # List to store nodes
+	for child in get_children():
+		if child.is_in_group("nodes"):
+			nodes.append(child)
+	var node_count = nodes.size()
+	var angle_step = 2 * PI / node_count
+	for i in range(node_count):
+		var node = nodes[i] # Get the node from the filtered list
+		var angle = i * angle_step
+		var x = center.x + radius * cos(angle)
+		var y = center.y + radius * sin(angle)
+		node.position = Vector2(x, y)

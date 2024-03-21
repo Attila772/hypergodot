@@ -1,0 +1,92 @@
+{
+	"categories": [
+		{
+			"uuid": "0b7bf3f6-068f-48bb-8ff5-654e4ec580ce",
+			"title": "Task",
+			"color": "70bafa"
+		}
+	],
+	"stages": [
+		{
+			"uuid": "91a0a0e4-19d5-4f69-850b-67f6fb3efc25",
+			"title": "Todo",
+			"tasks": [
+				"a49c7b00-5cc4-4df4-8ba7-1a584e67cdb5",
+				"6da76b61-206e-40d5-80fb-94871040b540",
+				"e6fd244a-a514-4c80-948f-0d5a248620c5"
+			]
+		},
+		{
+			"uuid": "9751cd05-65c2-458c-bf1d-e272493d2b5e",
+			"title": "Doing",
+			"tasks": [
+				"cb82859d-f805-4638-87b8-5909f9ea655b"
+			]
+		},
+		{
+			"uuid": "b0015753-fd9a-410a-ae75-1899e86462b6",
+			"title": "Done",
+			"tasks": [
+				"95b53ed7-0ad7-49a6-b913-9b7b9a49ecb3",
+				"9cf6f369-48d9-4728-bba8-b6e228431884"
+			]
+		}
+	],
+	"tasks": [
+		{
+			"uuid": "95b53ed7-0ad7-49a6-b913-9b7b9a49ecb3",
+			"title": "Graham Scan",
+			"description": "",
+			"category": "0b7bf3f6-068f-48bb-8ff5-654e4ec580ce",
+			"steps": []
+		},
+		{
+			"uuid": "9cf6f369-48d9-4728-bba8-b6e228431884",
+			"title": "Jobb klikk menü",
+			"description": "",
+			"category": "0b7bf3f6-068f-48bb-8ff5-654e4ec580ce",
+			"steps": []
+		},
+		{
+			"uuid": "cb82859d-f805-4638-87b8-5909f9ea655b",
+			"title": "jobb klikk menü, adott node és hozzá tartozó edge-ek maradjanak csak ",
+			"description": "",
+			"category": "0b7bf3f6-068f-48bb-8ff5-654e4ec580ce",
+			"steps": []
+		},
+		{
+			"uuid": "a49c7b00-5cc4-4df4-8ba7-1a584e67cdb5",
+			"title": "Jobb klikk menü, node törlés",
+			"description": "",
+			"category": "0b7bf3f6-068f-48bb-8ff5-654e4ec580ce",
+			"steps": []
+		},
+		{
+			"uuid": "6da76b61-206e-40d5-80fb-94871040b540",
+			"title": "Config file",
+			"description": "",
+			"category": "0b7bf3f6-068f-48bb-8ff5-654e4ec580ce",
+			"steps": []
+		},
+		{
+			"uuid": "e6fd244a-a514-4c80-948f-0d5a248620c5",
+			"title": "Config file tartalom: Szín, Él méret, csomópont méret, élek közötti távolságok",
+			"description": "",
+			"category": "0b7bf3f6-068f-48bb-8ff5-654e4ec580ce",
+			"steps": []
+		}
+	],
+	"layout": {
+		"columns": [
+			[
+				"91a0a0e4-19d5-4f69-850b-67f6fb3efc25"
+			],
+			[
+				"9751cd05-65c2-458c-bf1d-e272493d2b5e"
+			],
+			[
+				"b0015753-fd9a-410a-ae75-1899e86462b6"
+			]
+		]
+	}
+}

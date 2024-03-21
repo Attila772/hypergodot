@@ -8,6 +8,7 @@ var node_id = "name"
 var circle_usage = {} # Edge instance to circle index
 signal node_drag_started(node)
 signal node_drag_ended(node)
+var NodeMenu = load("res://NodeMenu.tscn")
 
 func _set_node_id(value : String):
 	node_id = value
@@ -20,7 +21,6 @@ func _input(event):
 			if event.pressed:
 				var mouse_pos = get_viewport().get_mouse_position()
 				var mouse_pos2 = get_global_mouse_position() # Adjusted line
-				print(mouse_pos2, get_rect().position)
 				if get_rect().has_point(mouse_pos2):
 					dragging = true
 					drag_offset = mouse_pos - get_position()
@@ -31,6 +31,19 @@ func _input(event):
 					emit_signal("node_drag_ended", self)
 					modulate = Color(1, 1, 1, 1)
 					dragging = false
+		if event.button_index == MOUSE_BUTTON_RIGHT:
+			if event.pressed:
+				var mouse_pos = get_viewport().get_mouse_position()
+				var mouse_pos2 = get_global_mouse_position() # Adjusted line
+				if get_rect().has_point(mouse_pos2):
+					modulate = Color(1, 2, 1, 0.7)
+					var NodeMenuInstance = NodeMenu.instantiate()
+					NodeMenuInstance.position = position
+					NodeMenuInstance.node = self
+					get_parent().add_child(NodeMenuInstance)
+			else:
+				modulate = Color(1, 1, 1, 1)
+				pass
 
 
 func get_rect() -> Rect2:
@@ -46,9 +59,6 @@ func _process(delta):
 
 
 func _draw():
-	#randomize() # Initialize the random number generator
-	#for radius in offset_circles:
-	#	draw_circle(Vector2(), radius, Color(randf(), randf(), randf(), 0.5)) # Draw semi-transparent circles with random colors
 	pass
 
 # This function should use the edges array, and construct as many circles around the node, with a small offset in the radius, that will be used

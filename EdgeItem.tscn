@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3 uid="uid://bcgmtai4ybwjk"]
+
+[ext_resource type="Script" path="res://EdgeItem.gd" id="1_fco0k"]
+
+[node name="EdgeItem" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 220.0
+offset_bottom = 24.0
+script = ExtResource("1_fco0k")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 220.0
+offset_bottom = 22.0
+color = Color(0.215686, 0.215686, 0.215686, 1)
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 3.0
+offset_right = 43.0
+offset_bottom = 23.0
+text = "Edge"
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 147.0
+offset_top = 3.0
+offset_right = 217.0
+offset_bottom = 18.0
