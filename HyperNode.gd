@@ -69,15 +69,26 @@ func update_size(size_scale: float, new_centrality_score: float):
 
 func make_offset_circles():
 	offset_circles.clear()
-	var circle_count = edges.size()
 	var scale_factor = (scale.x + scale.y) / 2
 	var base_radius = 25 * scale_factor
-	var radius_increment = 10 * scale_factor
-	
-	for i in range(circle_count):
-		var radius = base_radius + i * radius_increment
-		offset_circles.append(radius)
-	
+	var cumulative_radius = base_radius
+	var edge_widths = []
+	for edge_id in edges.keys():
+		var edge_support = edges[edge_id] 
+		var edge_width = pow(edge_support, 0.35) # Function to calculate edge width based on support
+		edge_widths.append(edge_width)
+
+	for i in range(edge_widths.size()):
+		var edge_width = edge_widths[i]
+		# Increase the radius by half of the previous edge's width and half of the current edge's width
+		# This ensures that the edges do not overlap
+		if i == 0:
+			cumulative_radius += edge_width / 2
+		else:
+			cumulative_radius += (edge_widths[i - 1] / 2) + (edge_width / 2)
+
+		offset_circles.append(cumulative_radius)
+		# cumulative_radius += edge_width / 2  # Prepare for the next edge (not needed here)
 	queue_redraw()
 
 

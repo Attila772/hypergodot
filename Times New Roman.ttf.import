@@ -15,6 +15,7 @@ dest_files=["res://.godot/imported/Times New Roman.ttf-5309258ee4eb8e8a0e31d33c7
 Rendering=null
 antialiasing=1
 generate_mipmaps=false
+disable_embedded_bitmaps=true
 multichannel_signed_distance_field=false
 msdf_pixel_range=8
 msdf_size=48

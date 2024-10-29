@@ -40,52 +40,78 @@ func create_nodes(nodes: Dictionary):
 
 func populate_edge_data(file_data):
 	var hyperedge_scene = load("res://HyperEdge.tscn")
-	var nodes = file_data["nodes"] # Retrieve nodes from the file data
-	var edges = file_data["edges"] # Retrieve edges from the file data
-	
+	var nodes = file_data["nodes"]  # Retrieve nodes from the file data
+	var edges = file_data["edges"]  # Retrieve edges from the file data
+
 	var group_names = []
 	for edge_id in edges:
 		var group_name = edges[edge_id]["group"]
 		if group_name not in group_names:
 			group_names.append(group_name)
 	Global.initialize_groups(group_names)
-	# Iterate over nodes to build edge data based on node connections
+
+	# Step 1: Build a per-node mapping of edge IDs to radii
+	var node_edge_radius_map = {}  # Dictionary mapping node_id to {edge_id: radius}
 	for node_id in nodes:
 		var node_edges = nodes[node_id].edges
-		var circle_ref = get_node(str(node_id)) # Assuming this gets a node instance with 'offset_circles'
-		var offset_circles = circle_ref.offset_circles # List of radii for offset circles
-		for edge_index in range(node_edges.size()):
-			var edge_id = node_edges.keys()[edge_index]
-			if not edges.has(edge_id):
-				edges[edge_id] = {"nodes": [], "radii": [], "support": 0, "group": ""}
-				
-			
-			if edge_index < offset_circles.size(): # Ensure there's a corresponding circle
-				var radius = offset_circles[edge_index]
-				print(offset_circles[edge_index])
-				
-				# Append node and radius information for the edge
-			
-				edges[edge_id]["radii"].append(radius)
-				edges[edge_id]["support"] = nodes[node_id].edges[edge_id] # Support value
-				edges[edge_id]["group"] = edges[edge_id]["group"] # Group is already stored in the edges dictionary
-				
-			else:
-				print("Error: Node %s has more edges (%s) than offset circles provided." % [node_id, node_edges.size()])
-				break
+		var circle_ref = get_node(str(node_id))  # Get node instance with 'offset_circles'
+		var offset_circles = circle_ref.offset_circles  # List of radii for offset circles
 
-	# Instantiate hyperedges and visualize them
+		var edge_ids = node_edges.keys()
+		var edge_radius_map = {}
+
+		# Ensure there are enough radii for each edge
+		if offset_circles.size() < edge_ids.size():
+			print("Error: Node %s has more edges (%s) than offset circles provided." % [node_id, edge_ids.size()])
+			continue  # Skip this node if radii are insufficient
+
+		# Map each edge_id to its corresponding radius for this node
+		for i in range(edge_ids.size()):
+			var edge_id = edge_ids[i]
+			var radius = offset_circles[i]
+			edge_radius_map[edge_id] = radius
+
+		node_edge_radius_map[node_id] = edge_radius_map
+
+	# Step 2: Build edges data using node_edge_radius_map
+	for edge_id in edges:
+		var edge_nodes = edges[edge_id]["nodes"]  # Nodes connected by this edge
+		var edge_radii = []
+		var edge_node_ids = []
+
+		for node_id in edge_nodes:
+			if node_edge_radius_map.has(node_id):
+				var edge_radius_map = node_edge_radius_map[node_id]
+				if edge_radius_map.has(edge_id):
+					var radius = edge_radius_map[edge_id]
+					edge_node_ids.append(node_id)
+					edge_radii.append(radius)
+				else:
+					print("Error: Edge radius not found for node %s and edge %s" % [node_id, edge_id])
+			else:
+				print("Error: Node %s not found in node_edge_radius_map" % node_id)
+
+		# Update edges[edge_id] with aligned nodes and radii
+		edges[edge_id]["nodes"] = edge_node_ids
+		edges[edge_id]["radii"] = edge_radii
+
+	# Step 3: Instantiate hyperedges and visualize them
 	for edge_id in edges:
 		var hyperedge_instance = hyperedge_scene.instantiate()
 		var edge_data = edges[edge_id]
 		var node_radii_pairs = {}
+
+		# Ensure nodes and radii arrays are aligned
+		if edge_data["nodes"].size() != edge_data["radii"].size():
+			print("Error: Mismatch between nodes and radii sizes for edge", edge_id)
+			continue  # Skip this edge if there's a mismatch
 
 		# Map each node to its radius
 		for i in range(edge_data["nodes"].size()):
 			var nodeid = edge_data["nodes"][i]
 			var radius = edge_data["radii"][i]
 			node_radii_pairs[nodeid] = radius
-		
+
 		# Assign the nodes and radii to the hyperedge instance
 		hyperedge_instance.nodes = node_radii_pairs
 
@@ -93,7 +119,7 @@ func populate_edge_data(file_data):
 		var color = Color(randf(), randf(), randf(), 0.3)  # Generate a random color
 		hyperedge_instance.color = color
 
-		# Set the group name (2021 or 2022) to the hyperedge instance for future use
+		# Set the group name to the hyperedge instance for future use
 		hyperedge_instance.group = edge_data["group"]
 
 		hyperedge_instance.add_to_group("edges")
@@ -101,9 +127,10 @@ func populate_edge_data(file_data):
 
 		# Set the width of the hyperedge based on the support value
 		hyperedge_instance.width = pow(edges[edge_id]["support"], 0.35)
-		
+
 		# Add the hyperedge instance to the scene tree
 		add_child(hyperedge_instance)
+
 
 			
 
@@ -282,12 +309,12 @@ func calculate_centrality_and_resize_nodes(file_data):
 	var centrality_scores = {}
 	
 	# Calculate centrality (degree centrality in this case)
-	print(nodes)
+
 	for node_id in nodes:
 		var degree = nodes[node_id].edges.size()
 		centrality_scores[node_id] = degree
 		max_centrality = max(max_centrality, degree)
-	print(centrality_scores)
+
 	# Resize nodes based on centrality
 	for node_id in nodes:
 		var node_instance = get_node(str(node_id))

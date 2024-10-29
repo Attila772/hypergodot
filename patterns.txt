@@ -1,6 +1,6 @@
 Environment_and_Natural_Resources Pollution_Management #SUP: 2662 #GROUP 2022
 Energy_and_Extractives Energy_Efficiency #SUP: 3163 #GROUP 2022
-Health_Emergency_Preparedness_and_Disaster_Response Energy_and_Extractives #SUP: 7720 #GROUP 2022
+Energy_and_Extractives Health_Emergency_Preparedness_and_Disaster_Response #SUP: 7720 #GROUP 2022
 Environment_and_Natural_Resources Pollution_Management Air_Pollution #SUP: 3312 #GROUP 2023
-Energy_and_Extractives Climate_Change Environment_and_Natural_Resources Renewable_Energy #SUP: 3301 #GROUP 2023
+Environment_and_Natural_Resources Energy_and_Extractives Climate_Change Renewable_Energy #SUP: 3301 #GROUP 2023
 Energy_and_Extractives Health_Emergency_Preparedness_and_Disaster_Response #SUP: 5647 #GROUP 2023
