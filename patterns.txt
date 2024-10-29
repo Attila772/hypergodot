@@ -1,33 +1,6 @@
-Environment_and_Natural_Resources Pollution_Management #SUP: 1
-Climate_Change Climate_Science #SUP: 1
-Energy_and_Extractives Renewable_Energy Energy_Efficiency #SUP: 1
-Energy_and_Extractives Climate_Change Renewable_Energy Energy_Efficiency #SUP: 1
-Energy_and_Extractives Climate_Change Energy_Efficiency #SUP: 1
-Energy_and_Extractives Energy_Efficiency #SUP: 1
-Climate_Change Climate_Finance #SUP: 1
-Energy_and_Extractives Climate_Change Climate_Change_Mitigation Short-lived_Climate_Pollutants_(SLCPs) Methane Oil_and_Gas_Policy,_Strategy_and_Institutions #SUP: 1
-Energy_and_Extractives Climate_Change Climate_Change_Mitigation Oil_and_Gas_Policy,_Strategy_and_Institutions #SUP: 1
-Energy_and_Extractives Renewable_Energy Oil_and_Gas_Policy,_Strategy_and_Institutions #SUP: 1
-Energy_and_Extractives Climate_Change Renewable_Energy Oil_and_Gas_Policy,_Strategy_and_Institutions #SUP: 1
-Energy_and_Extractives Climate_Change Oil_and_Gas_Policy,_Strategy_and_Institutions #SUP: 1
-Energy_and_Extractives Oil_and_Gas_Policy,_Strategy_and_Institutions #SUP: 1
-Environment_and_Natural_Resources Forests #SUP: 1
-Climate_Change Environment_and_Natural_Resources Forests #SUP: 1
-Energy_and_Extractives Climate_Change Renewable_Energy Climate_Change_Mitigation Short-lived_Climate_Pollutants_(SLCPs) Methane #SUP: 1
-Climate_Change Climate_Change_Mitigation Short-lived_Climate_Pollutants_(SLCPs) Methane #SUP: 1
-Energy_and_Extractives Climate_Change Climate_Change_Mitigation Short-lived_Climate_Pollutants_(SLCPs) Methane #SUP: 1
-Energy_and_Extractives Climate_Change Renewable_Energy Climate_Change_Mitigation Short-lived_Climate_Pollutants_(SLCPs) #SUP: 1
-Climate_Change Climate_Change_Mitigation Short-lived_Climate_Pollutants_(SLCPs) #SUP: 1
-Energy_and_Extractives Climate_Change Climate_Change_Mitigation Short-lived_Climate_Pollutants_(SLCPs) #SUP: 1
-Energy_and_Extractives Climate_Change Renewable_Energy Climate_Change_Mitigation #SUP: 1
-Climate_Change Climate_Change_Mitigation #SUP: 1
-Energy_and_Extractives Climate_Change Climate_Change_Mitigation #SUP: 1
-Environment_and_Natural_Resources Natural_Resource_Management_ #SUP: 1
-Climate_Change Natural_Resource_Management_ #SUP: 1
-Energy_and_Extractives Renewable_Energy #SUP: 1
-Energy_and_Extractives Climate_Change Renewable_Energy #SUP: 1
-Environment_and_Natural_Resources Investment_Climate #SUP: 1
-Climate_Change Environment_and_Natural_Resources #SUP: 1
-Energy_and_Extractives Environment_and_Natural_Resources #SUP: 1
-Energy_and_Extractives Health_Emergency_Preparedness_and_Disaster_Response #SUP: 1
-Energy_and_Extractives Climate_Change #SUP: 1
+Environment_and_Natural_Resources Pollution_Management #SUP: 2662 #GROUP 2022
+Energy_and_Extractives Energy_Efficiency #SUP: 3163 #GROUP 2022
+Health_Emergency_Preparedness_and_Disaster_Response Energy_and_Extractives #SUP: 7720 #GROUP 2022
+Environment_and_Natural_Resources Pollution_Management Air_Pollution #SUP: 3312 #GROUP 2023
+Energy_and_Extractives Climate_Change Environment_and_Natural_Resources Renewable_Energy #SUP: 3301 #GROUP 2023
+Energy_and_Extractives Health_Emergency_Preparedness_and_Disaster_Response #SUP: 5647 #GROUP 2023

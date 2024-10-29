@@ -47,32 +47,38 @@ func _input(event):
 
 
 func get_rect() -> Rect2:
-	var area = Rect2(-25, -25, 50, 50)
-	area.position.x = position.x + area.position.x
-	area.position.y = position.y + area.position.y
-	return  area
+	var scale_factor = (scale.x + scale.y) / 2
+	var size = 50 * scale_factor  # Assuming the original size is 50x50
+	var area = Rect2(-size/2, -size/2, size, size)
+	area.position += position
+	return area
 
 func _process(delta):
 	if dragging:
 		var mouse_pos = get_viewport().get_mouse_position()
 		set_position(mouse_pos - drag_offset)
 
-
+var centrality_score = 0
 func _draw():
 	pass
+	
+func update_size(size_scale: float, new_centrality_score: float):
+	scale = Vector2(size_scale, size_scale)
+	centrality_score = new_centrality_score
+	make_offset_circles()  # Now this will use the updated scale
 
-# This function should use the edges array, and construct as many circles around the node, with a small offset in the radius, that will be used
-# to connect the edges to the node, and prevent the edges from overlapping the node and other edges
 func make_offset_circles():
-	offset_circles.clear() # Reset previous data
+	offset_circles.clear()
 	var circle_count = edges.size()
-	var base_radius = 25 # Starting radius for the smallest circle
-
+	var scale_factor = (scale.x + scale.y) / 2
+	var base_radius = 25 * scale_factor
+	var radius_increment = 10 * scale_factor
+	
 	for i in range(circle_count):
-		var radius = base_radius + i * 5 # Increase radius for each subsequent circle
-		offset_circles.append(radius) # Store only the radius, as center is the node's position
-
-	queue_redraw() 
+		var radius = base_radius + i * radius_increment
+		offset_circles.append(radius)
+	
+	queue_redraw()
 
 
 

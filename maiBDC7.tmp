@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://2f8fvrck2f38"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_1hwno"]
+[ext_resource type="Script" path="res://Camera2D.gd" id="2_iiqxp"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_1hwno")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_left = -8559.0
+offset_top = -6223.0
+offset_right = 9085.0
+offset_bottom = 6156.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+visible = false
+offset_right = 195.0
+offset_bottom = 401.0
+color = Color(0.0980392, 0.0980392, 0.0980392, 1)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("2_iiqxp")
