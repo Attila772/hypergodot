@@ -124,9 +124,28 @@ func populate_edge_data(file_data):
 
 		hyperedge_instance.add_to_group("edges")
 		hyperedge_instance.name = str(edge_id)
+		var config = ConfigFile.new()
+		var expression = Expression.new()
+		var err = config.load("res://conf.cfg")
+		var expression_text = config.get_value("graph_settings", "edge_width_expression")
+		print(expression_text)
+		
+		var error = expression.parse(expression_text, ["support", "node_count", "total_nodes"])
 
+		if error != OK:
+			$AcceptDialog.window_title = "Error"
+			$AcceptDialog.dialog_text = "The expression cannot be parsed: " + error
+			$AcceptDialog.get_ok().text = "Close"
+			$AcceptDialog.popup_centered()
 		# Set the width of the hyperedge based on the support value
-		hyperedge_instance.width = pow(edges[edge_id]["support"], 0.35)
+		var result = expression.execute([edges[edge_id]["support"], edge_data["nodes"].size(), nodes.size()] )
+		if result == null: 
+			$AcceptDialog.title = "Error"
+			$AcceptDialog.dialog_text = "The expression cannot be parsed:  Error" + str(error)
+			$AcceptDialog.ok_button_text = "Close"
+			$AcceptDialog.popup_centered()
+			return 1.0
+		hyperedge_instance.width = result
 
 		# Add the hyperedge instance to the scene tree
 		add_child(hyperedge_instance)
