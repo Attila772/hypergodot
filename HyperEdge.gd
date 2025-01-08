@@ -30,8 +30,8 @@ func _draw():
 			var radius = nodes[node_id]
 			points += generate_circle_points(center, radius,50)  # Generate circle points
 			# Draw each point as a small circle for visibility
-			for point in points:
-				draw_circle(point, 2, Color(1, 0, 0))  # Red color, radius 2
+			#for point in points:
+			#	draw_circle(point, 2, Color(1, 0, 0))  # Red color, radius 2
 	
 	# Compute the convex hull of the points
 	var hull = andrew_monotone_chain(points)
@@ -106,7 +106,7 @@ func andrew_monotone_chain(points):
 		upper.append(p)
 	# Concatenate the hulls
 	# The first and last points in lower will be the same as the last two points in upper,
-	# so we pop them from the result
+	# so we drop them from the result
 	lower.pop_back()
 	upper.pop_back()
 	return lower + upper
