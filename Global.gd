@@ -2,6 +2,7 @@ extends Node
 
 var group_dictionary = {}
 var group_count = 0
+var high_quality = false
 
 # Function to initialize the groups from a list of group names
 func initialize_groups(group_names: Array):

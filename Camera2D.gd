@@ -7,6 +7,8 @@ var dragging: bool = false
 var drag_last_position: Vector2
 
 func _ready():
+	var dir = DirAccess.open("user://")
+	dir.make_dir("screenshots")
 	# Initial setup if needed
 	pass
 
@@ -41,3 +43,25 @@ func _input(event):
 		# Move the camera based on the drag
 		position += drag_delta
 		drag_last_position = drag_current_position
+
+
+func _on_button_button_up() -> void:
+	get_parent().get_node("CanvasLayer2").get_node("Button").visible = false
+	# Enable high-quality mode
+	Global.high_quality = true
+	queue_redraw()
+	await RenderingServer.frame_post_draw  # Wait for the high-quality redraw
+	# Capture the screenshot
+	var image = get_viewport().get_texture().get_image()
+	
+	var dir = DirAccess.open("user://screenshots")
+	var c= 0
+	for n in dir.get_files():
+		c+=1
+	image.save_png("user://screenshots/ss" +str(c)+ ".png")
+	
+
+	# Revert back to normal mode
+	Global.high_quality = false
+	get_parent().get_node("CanvasLayer2").get_node("Button").visible = true
+	pass # Replace with function body.

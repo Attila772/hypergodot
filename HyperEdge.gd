@@ -5,6 +5,7 @@ var color: Color
 var width = 5
 var dragging = false
 var group = ""
+var point_count = 50
 
 func _ready():
 	pass
@@ -20,6 +21,10 @@ func _input(event):
 		else:
 			dragging = false  # Stop dragging
 			queue_redraw()  # Optionally, queue a redraw when you stop dragging
+			
+
+	
+	
 func _draw():
 	var points = []
 	for node_id in nodes:
@@ -28,7 +33,16 @@ func _draw():
 		if node:
 			var center = node.position
 			var radius = nodes[node_id]
-			points += generate_circle_points(center, radius,50)  # Generate circle points
+			
+			
+			var config = ConfigFile.new()
+			var err = config.load("res://conf.cfg")
+			if err == OK:
+				# Get the edge_width value from the config file
+				point_count = config.get_value("graph_settings", "point_count", 2.0)
+			if Global.high_quality:
+				point_count = 300
+			points += generate_circle_points(center, radius,point_count)  # Generate circle points
 			# Draw each point as a small circle for visibility
 			#for point in points:
 			#	draw_circle(point, 2, Color(1, 0, 0))  # Red color, radius 2
