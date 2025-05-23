@@ -29,12 +29,13 @@ WEIGHT: numeric value representing edge weight (e.g., frequency, strength).
 
 GROUP: label for grouping edges (e.g., year, category, temporal slice).
 
-#Configuration File (conf.cfg)
+## Configuration File (conf.cfg)
 
 Users can customize the behavior and appearance of the visualization using a config file. Parameters include layout type, mathematical expressions for edge width and node size, and camera/export settings.
 
 Example configuration:
-	[graph_settings]
+
+[graph_settings]
 point_count = 12
 edge_width_expression = "weight * 0.2 + 1"
 node_radius_expression = "30 + 100 * (centrality / total_nodes)"
@@ -42,5 +43,5 @@ layout = "force-directed"
 parameters = [500, 250.0, 30.0]
 #screenshot_path = "C:\\Users\\YourName\\Documents\\screenshots"
 
-#Example output:
+## Example output:
 	![Alt text](example_h.png)
