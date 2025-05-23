@@ -41,3 +41,6 @@ node_radius_expression = "30 + 100 * (centrality / total_nodes)"
 layout = "force-directed"
 parameters = [500, 250.0, 30.0]
 #screenshot_path = "C:\\Users\\YourName\\Documents\\screenshots"
+
+#Example output:
+	![Alt text](example_h.png)
