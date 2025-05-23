@@ -118,7 +118,7 @@ func andrew_monotone_chain(points):
 		upper.append(p)
 	# Concatenate the hulls
 	# The first and last points in lower will be the same as the last two points in upper,
-	# so we pop them from the result
+	# so we drop them from the result
 	lower.pop_back()
 	upper.pop_back()
 	return lower + upper
