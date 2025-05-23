@@ -44,4 +44,5 @@ parameters = [500, 250.0, 30.0]
 #screenshot_path = "C:\\Users\\YourName\\Documents\\screenshots"
 
 ## Example output:
-	![Alt text](example_h.png)
+	
+![Alt text](example_h.png)
