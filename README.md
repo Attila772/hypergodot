@@ -37,10 +37,15 @@ Example configuration:
 
 [graph_settings]
 point_count = 12
+
 edge_width_expression = "weight * 0.2 + 1"
+
 node_radius_expression = "30 + 100 * (centrality / total_nodes)"
+
 layout = "force-directed"
+
 parameters = [500, 250.0, 30.0]
+
 #screenshot_path = "C:\\Users\\YourName\\Documents\\screenshots"
 
 ## Example output:
