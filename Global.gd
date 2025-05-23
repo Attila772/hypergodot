@@ -3,6 +3,8 @@ extends Node
 var group_dictionary = {}
 var group_count = 0
 var high_quality = false
+var total_nodes = 0
+var edges = null
 
 # Function to initialize the groups from a list of group names
 func initialize_groups(group_names: Array):

@@ -8,6 +8,8 @@ var node_id = "name"
 var circle_usage = {} # Edge instance to circle index
 signal node_drag_started(node)
 signal node_drag_ended(node)
+var drawing_scale = Vector2(1, 1)  # Default scale
+var radius_global = 0
 var NodeMenu = load("res://NodeMenu.tscn")
 
 func _set_node_id(value : String):
@@ -63,33 +65,60 @@ func _draw():
 	pass
 	
 func update_size(size_scale: float, new_centrality_score: float):
-	scale = Vector2(size_scale, size_scale)
 	centrality_score = new_centrality_score
-	make_offset_circles()  # Now this will use the updated scale
+	
+	# Load the config file
+	var config = ConfigFile.new()
+	var err = config.load("res://conf.cfg")
+	if err != OK:
+		print("Error loading conf.cfg: ", err)
+		return
+
+	# Parse the expression
+	var expression_text = config.get_value("graph_settings", "node_radius_expression", "10 + 40 * (centrality / total_nodes)")
+	var expression = Expression.new()
+	var parse_error = expression.parse(expression_text, ["centrality", "total_nodes"])
+
+	if parse_error != OK:
+		print("Error parsing node radius expression: ", parse_error)
+		return
+
+	# Execute the expression
+	var radius = expression.execute([centrality_score, Global.total_nodes])
+	if radius == null:
+		print("Error executing node radius expression.")
+		return
+	radius_global = radius
+	# Apply the calculated radius
+	scale = Vector2(radius / 25, radius / 25)  # Assuming the base radius is 25
+	drawing_scale = scale
+	make_offset_circles()
 
 func make_offset_circles():
 	offset_circles.clear()
-	var scale_factor = (scale.x + scale.y) / 2
-	var base_radius = 25 * scale_factor
-	var cumulative_radius = base_radius
+
+	# Calculate the base radius dynamically based on the node's current drawing scale
+	var node_radius = 25 * ((drawing_scale.x + drawing_scale.y) / 2)  # Adjust 25 to match your base radius
+	
+	var cumulative_radius = node_radius  # Start with the node's outer boundary
+
 	var edge_widths = []
 	for edge_id in edges.keys():
-		var edge_support = edges[edge_id] 
-		var edge_width = pow(edge_support, 0.35) # Function to calculate edge width based on support
+		var edge_support = edges[edge_id]
+		var edge_width = pow(edge_support, 0.35)  # Function to calculate edge width based on support
 		edge_widths.append(edge_width)
 
 	for i in range(edge_widths.size()):
 		var edge_width = edge_widths[i]
-		# Increase the radius by half of the previous edge's width and half of the current edge's width
-		# This ensures that the edges do not overlap
+		# Add half the previous and current edge widths to ensure proper spacing
 		if i == 0:
 			cumulative_radius += edge_width / 2
 		else:
 			cumulative_radius += (edge_widths[i - 1] / 2) + (edge_width / 2)
 
-		offset_circles.append(cumulative_radius)
-		# cumulative_radius += edge_width / 2  # Prepare for the next edge (not needed here)
-	queue_redraw()
+		offset_circles.append(cumulative_radius)  # Store the radius for this edge
+
+	queue_redraw()  # Ensure the node is redrawn with updated circles
 
 
 

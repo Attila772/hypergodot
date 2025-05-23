@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bcgmtai4ybwjk"]
 
-[ext_resource type="Script" path="res://EdgeItem.gd" id="1_fco0k"]
+[ext_resource type="Script" uid="uid://bi5e4wog6rw37" path="res://EdgeItem.gd" id="1_fco0k"]
 
 [node name="EdgeItem" type="Control"]
 layout_mode = 3

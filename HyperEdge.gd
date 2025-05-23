@@ -22,9 +22,6 @@ func _input(event):
 			dragging = false  # Stop dragging
 			queue_redraw()  # Optionally, queue a redraw when you stop dragging
 			
-
-	
-	
 func _draw():
 	var points = []
 	for node_id in nodes:
@@ -33,12 +30,13 @@ func _draw():
 		if node:
 			var center = node.position
 			var radius = nodes[node_id]
-			
+			var actual_node_radius = node.radius_global
+			radius += actual_node_radius
+			radius -=30
 			
 			var config = ConfigFile.new()
 			var err = config.load("res://conf.cfg")
 			if err == OK:
-				# Get the edge_width value from the config file
 				point_count = config.get_value("graph_settings", "point_count", 2.0)
 			if Global.high_quality:
 				point_count = 300

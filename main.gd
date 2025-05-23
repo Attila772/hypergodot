@@ -116,7 +116,7 @@ func populate_edge_data(file_data):
 		hyperedge_instance.nodes = node_radii_pairs
 
 		# Assign a color based on the group
-		var color = Color(randf(), randf(), randf(), 0.3)  # Generate a random color
+		var color = Color(randf(), randf(), randf(), 0.4)  # Generate a random color
 		hyperedge_instance.color = color
 
 		# Set the group name to the hyperedge instance for future use
@@ -128,8 +128,7 @@ func populate_edge_data(file_data):
 		var expression = Expression.new()
 		var err = config.load("res://conf.cfg")
 		var expression_text = config.get_value("graph_settings", "edge_width_expression")
-		print(expression_text)
-		
+	
 		var error = expression.parse(expression_text, ["support", "node_count", "total_nodes"])
 
 		if error != OK:
@@ -149,9 +148,9 @@ func populate_edge_data(file_data):
 
 		# Add the hyperedge instance to the scene tree
 		add_child(hyperedge_instance)
+	Global.edges = edges
 
 
-			
 
 func _ready():
 	# Read the file and get both nodes and edges
@@ -161,11 +160,41 @@ func _ready():
 	var edges = file_data["edges"]
 	create_nodes(nodes)
 	populate_edge_data(file_data)
-	apply_force_directed_layout(10, 150.0, 900.0)
+
+	# Load layout configuration from conf.cfg
+	var config = ConfigFile.new()
+	var err = config.load("res://conf.cfg")
+
+	if err != OK:
+		print("Error loading conf.cfg: ", err)
+		return
+
+	var layout = config.get_value("graph_settings", "layout", "")
+	var parameters = config.get_value("graph_settings", "parameters", [])
+
+	match layout:
+		"force-directed":
+			if parameters.size() == 3:
+				apply_force_directed_layout(parameters[0], parameters[1], parameters[2])
+				print("Applied force-directed layout with parameters: ", parameters)
+			else:
+				print("Invalid parameters for force-directed layout: ", parameters)
+
+		"circular":
+			if parameters.size() == 1:
+				apply_circular_layout(parameters[0])
+				print("Applied circular layout with parameter: ", parameters[0])
+			else:
+				print("Invalid parameters for circular layout: ", parameters)
+
+		_:
+			print("Unknown layout type: ", layout)
+
 	calculate_centrality_and_resize_nodes(file_data)
 	#apply_hyperedge_constrained_layout()
 	#apply_circular_layout(500)
 	pass # Replace with function body.
+
 
 
 func read_file(path):
@@ -176,10 +205,10 @@ func read_file(path):
 	
 	while not file.eof_reached():
 		var line = file.get_line().strip_edges()
-		if line.find("#SUP:") == -1:
+		if line.find("#WEIGHT:") == -1:
 			continue # Skip this line if no support value
 		
-		var parts = line.split(" #SUP: ")
+		var parts = line.split(" #WEIGHT: ")
 		var node_ids = parts[0].split(" ") # Nodes involved in this edge
 		
 		# Extract support and group
@@ -326,9 +355,9 @@ func calculate_centrality_and_resize_nodes(file_data):
 	var nodes = file_data["nodes"]
 	var max_centrality = 0
 	var centrality_scores = {}
-	
-	# Calculate centrality (degree centrality in this case)
+	Global.total_nodes = nodes.size()  # Store total node count in a global variable
 
+	# Calculate centrality (degree centrality in this case)
 	for node_id in nodes:
 		var degree = nodes[node_id].edges.size()
 		centrality_scores[node_id] = degree
@@ -339,12 +368,8 @@ func calculate_centrality_and_resize_nodes(file_data):
 		var node_instance = get_node(str(node_id))
 		if node_instance:
 			var normalized_centrality = float(centrality_scores[node_id]) / max_centrality
-			var size_scale = lerp(0.5, 2.0, normalized_centrality)
-			node_instance.update_size(size_scale, normalized_centrality)
-	
-	# Now update all edge positions
-	for edge in get_tree().get_nodes_in_group("edges"):
-		edge.update_position()
+			node_instance.update_size(normalized_centrality, normalized_centrality)
+
 		
 		
 		

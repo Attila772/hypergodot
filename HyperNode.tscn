@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://dll5p1lerh26o"]
 
-[ext_resource type="Script" path="res://HyperNode.gd" id="1_k5qsc"]
+[ext_resource type="Script" uid="uid://dtumcbkpovakj" path="res://HyperNode.gd" id="1_k5qsc"]
 [ext_resource type="FontFile" uid="uid://bqjrf7m2r0yac" path="res://Times New Roman.ttf" id="2_hcrqc"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jrb2w"]

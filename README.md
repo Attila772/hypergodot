@@ -1,33 +1,43 @@
-![github-top-lang][lang] ![lic] ![lic-font]
+# HyperGodot: Interactive Hypergraph Visualization Tool
 
-# MaterialIcons for Godot
+**HyperGodot** is an interactive, feature-rich visualization tool for hypergraphs, designed for advanced exploration and analysis of complex multi-actor relationships. Built using the Godot Engine, it supports dynamic layout computation, user customization, and comparative analysis through temporal or grouped hypergraphs.
 
-[*Templarian's Material-Design-Icons*](https://github.com/templarian/MaterialDesign) is a collection of icons for the [Material Design](https://material.io/) specification.
+## 🧠 Key Features
 
-This addon provides the following nodes to use the icons in Godot:
-- **MaterialIcon**: A node that displays an icon from the Material Design Icons collection.
-- **MaterialButton**: A node that displays an icon from the Material Design Icons collection as a button (without label).
+- **Multiple Layouts**: Force-directed and circular layouts for vertex positioning.
+- **Convex Hull Edge Drawing**: Uses Andrew’s monotone chain algorithm for rendering hyperedges with minimal overlap.
+- **Configurable Visualization**:
+  - Define node sizes and edge widths using mathematical expressions.
+  - Adjustable point count for rendering smoothness.
+  - Edge and node coloring.
+- **Temporal and Grouped Hypergraph Support**:
+  - Compare multiple hypergraph structures using groups and line styles (solid/dashed).
+- **Interactive UI**:
+  - Drag to reposition nodes.
+  - Select node to filter visible edges.
+  - Camera controls for navigation and zoom.
 
-It's also adds **IconsFinder** to the Godot's **Tools** menu.
-So you can find the icons easily.
+## 📁 Input Format
 
-![IconsFinder Screen Shot](screenshot_if.png)
+Input hypergraphs are plain text files using a space-separated format per hyperedge. Each line defines a hyperedge and may include tags:
 
-## Exporting
-For emojis to work in exported projects, you need add `*.json` files to include files settings:
-![include files settings](screenshot_export.png)
-
-## Install using gd-plug
-To install it with [gd-plug](https://github.com/imjp94/gd-plug) add in your `plug.gd` script:
-```gdscript
-extends "res://addons/gd-plug/plug.gd"
-
-func _plugging():
-	# your other plugins/addons install instructions
-	# ...
-	plug("rakugoteam/Godot-Material-Icons", {"include": ["addons", ".import/"]})
+```txt
+v1 v2 v3 #WEIGHT: 12 #GROUP: 2023
+v4 v5    #WEIGHT: 8  #GROUP: 2022
 ```
+WEIGHT: numeric value representing edge weight (e.g., frequency, strength).
 
-[lic]: https://img.shields.io/github/license/rakugoteam/Godot-Material-Icons?style=flat-square&label=📃%20License&
-[lang]: https://img.shields.io/github/languages/top/rakugoteam/Godot-Material-Icons?style=flat-square
-[lic-font]:https://img.shields.io/static/v1.svg?label=📜%20Font%20License&message=Pictogrammers%20Free%20License&color=informational&style=flat-square
+GROUP: label for grouping edges (e.g., year, category, temporal slice).
+
+#Configuration File (conf.cfg)
+
+Users can customize the behavior and appearance of the visualization using a config file. Parameters include layout type, mathematical expressions for edge width and node size, and camera/export settings.
+
+Example configuration:
+	[graph_settings]
+point_count = 12
+edge_width_expression = "weight * 0.2 + 1"
+node_radius_expression = "30 + 100 * (centrality / total_nodes)"
+layout = "force-directed"
+parameters = [500, 250.0, 30.0]
+#screenshot_path = "C:\\Users\\YourName\\Documents\\screenshots"

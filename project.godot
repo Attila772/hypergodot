@@ -13,9 +13,10 @@ config_version=5
 config/name="Hypergodot"
 run/main_scene="res://main.tscn"
 config/use_custom_user_dir=true
-config/custom_user_dir_name="screenshots"
-config/features=PackedStringArray("4.3", "Forward Plus")
-config/icon="res://icon.svg"
+config/custom_user_dir_name="HyperGodot"
+config/features=PackedStringArray("4.4", "Forward Plus")
+config/icon="res://ss6.png"
+config/windows_native_icon="res://ss6.ico"
 
 [autoload]
 
@@ -36,7 +37,7 @@ project/assembly_name="Hypergodot"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/material-design-icons/plugin.cfg")
+enabled=PackedStringArray()
 
 [input]
 
@@ -48,8 +49,8 @@ left_click={
 
 [rendering]
 
-anti_aliasing/screen_space_roughness_limiter/amount=0.55
 anti_aliasing/quality/msaa_2d=3
 anti_aliasing/quality/msaa_3d=3
+anti_aliasing/screen_space_roughness_limiter/amount=0.55
 anti_aliasing/quality/screen_space_aa=1
 anti_aliasing/quality/use_taa=true

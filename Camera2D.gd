@@ -51,17 +51,54 @@ func _on_button_button_up() -> void:
 	Global.high_quality = true
 	queue_redraw()
 	await RenderingServer.frame_post_draw  # Wait for the high-quality redraw
+
 	# Capture the screenshot
 	var image = get_viewport().get_texture().get_image()
 	
-	var dir = DirAccess.open("user://screenshots")
-	var c= 0
-	for n in dir.get_files():
-		c+=1
-	image.save_png("user://screenshots/ss" +str(c)+ ".png")
+	# Determine the save path
+	var config = ConfigFile.new()
+	var err = config.load("res://conf.cfg")
+	var save_path = "user://screenshots/"  # Default save path
 	
-
+	if err == OK:
+		var custom_path = config.get_value("graph_settings", "screenshot_path", "")
+		if custom_path != "":
+			save_path = custom_path  # Use the custom path if defined in the config file
+		else:
+			print("No valid screenshot_path in conf.cfg. Using default path.")
+	else:
+		print("Error loading conf.cfg. Using default path.")
+	
+	# Ensure the directory exists
+	if DirAccess.dir_exists_absolute(save_path) == false:
+		var create_result = DirAccess.make_dir_recursive_absolute(save_path)
+		if create_result != OK:
+			print("Failed to create directory:", save_path)
+			save_path = "user://screenshots/"
+			DirAccess.make_dir_recursive_absolute(save_path)
+	
+	# Determine the screenshot file name
+	var dir = DirAccess.open(save_path)
+	var count = 0
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		while file_name != "":
+			if not dir.current_is_dir():  # Count only files
+				count += 1
+			file_name = dir.get_next()
+		dir.list_dir_end()
+	else:
+		print("Failed to open directory:", save_path)
+	
+	# Save the screenshot
+	var screenshot_file = save_path + "/ss" + str(count) + ".png"
+	var save_result = image.save_png(screenshot_file)
+	if save_result == OK:
+		print("Screenshot saved to:", screenshot_file)
+	else:
+		print("Failed to save screenshot to:", screenshot_file)
+	
 	# Revert back to normal mode
 	Global.high_quality = false
 	get_parent().get_node("CanvasLayer2").get_node("Button").visible = true
-	pass # Replace with function body.

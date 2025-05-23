@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://2f8fvrck2f38"]
 
-[ext_resource type="Script" path="res://main.gd" id="1_1hwno"]
-[ext_resource type="Script" path="res://Camera2D.gd" id="2_iiqxp"]
+[ext_resource type="Script" uid="uid://dyv5tirbhal6c" path="res://main.gd" id="1_1hwno"]
+[ext_resource type="Script" uid="uid://dkr1g7pe3x5km" path="res://Camera2D.gd" id="2_iiqxp"]
 [ext_resource type="Texture2D" uid="uid://m1iltai5tk4w" path="res://camera.png" id="3_rymd3"]
 
 [node name="Node2D" type="Node2D"]
