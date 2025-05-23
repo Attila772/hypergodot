@@ -36,6 +36,7 @@ Users can customize the behavior and appearance of the visualization using a con
 Example configuration:
 
 [graph_settings]
+
 point_count = 12
 
 edge_width_expression = "weight * 0.2 + 1"
