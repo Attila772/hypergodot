@@ -6,6 +6,9 @@ var width = 5
 var dragging = false
 var group = ""
 var point_count = 50
+var is_dirty = true
+var cached_hull = []
+var cached_node_positions = {}
 
 func _ready():
 	pass
@@ -23,16 +26,43 @@ func _input(event):
 			queue_redraw()  # Optionally, queue a redraw when you stop dragging
 			
 func _draw():
-	var points = []
+	# Only recalculate if dirty or nodes have moved
+	if is_dirty or has_nodes_moved():
+		recalculate_edge()
+		is_dirty = false
+	
+	# Draw the cached hull
+	draw_cached_hull()
+
+
+func update_position():
+	queue_redraw()  # This will trigger a redraw with updated node positions and sizes
+
+func mark_dirty():
+	is_dirty = true
+	queue_redraw()
+
+func has_nodes_moved() -> bool:
 	for node_id in nodes:
 		var node = get_node_from_group(node_id)
-		
+		if node and cached_node_positions.has(node_id):
+			if node.position != cached_node_positions[node_id]:
+				return true
+	return false
+
+func recalculate_edge():
+	var points = []
+	cached_node_positions.clear()
+	
+	for node_id in nodes:
+		var node = get_node_from_group(node_id)
 		if node:
+			cached_node_positions[node_id] = node.position
 			var center = node.position
 			var radius = nodes[node_id]
 			var actual_node_radius = node.radius_global
 			radius += actual_node_radius
-			radius -=30
+			radius -= 30
 			
 			var config = ConfigFile.new()
 			var err = config.load("res://conf.cfg")
@@ -40,35 +70,22 @@ func _draw():
 				point_count = config.get_value("graph_settings", "point_count", 2.0)
 			if Global.high_quality:
 				point_count = 300
-			points += generate_circle_points(center, radius,point_count)  # Generate circle points
-			# Draw each point as a small circle for visibility
-			#for point in points:
-			#	draw_circle(point, 2, Color(1, 0, 0))  # Red color, radius 2
+			points += generate_circle_points(center, radius, point_count)
 	
-	# Compute the convex hull of the points
-	var hull = andrew_monotone_chain(points)
-	if hull.size() > 0 and hull[0] != hull[hull.size() - 1]:
-		hull.append(hull[0])  # Close the hull
-	
+	cached_hull = andrew_monotone_chain(points)
+	if cached_hull.size() > 0 and cached_hull[0] != cached_hull[cached_hull.size() - 1]:
+		cached_hull.append(cached_hull[0])
 
-	var group_index = Global.get_group_index(group)  # Get the group index from the global dictionary
-	
-	# Iterate over the hull points and draw lines between them based on the group
-	for i in range(hull.size() - 1):
+func draw_cached_hull():
+	var group_index = Global.get_group_index(group)
+	for i in range(cached_hull.size() - 1):
 		match group_index:
 			1:
-				# Draw solid line for group 1 (e.g., 2021)
-				draw_line(hull[i], hull[i + 1], color, width)
+				draw_line(cached_hull[i], cached_hull[i + 1], color, width)
 			2:
-				# Draw dashed line for group 2 (e.g., 2022)
-				draw_dashed_line(hull[i], hull[i + 1], color, width, 10.0)
+				draw_dashed_line(cached_hull[i], cached_hull[i + 1], color, width, 10.0)
 			_:
-				# Default behavior (solid line for other groups)
-				draw_line(hull[i], hull[i + 1], color, width)
-
-
-func update_position():
-	queue_redraw()  # This will trigger a redraw with updated node positions and sizes
+				draw_line(cached_hull[i], cached_hull[i + 1], color, width)
 
 func generate_circle_points(center, radius, point_count):
 	var points = []

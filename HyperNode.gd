@@ -8,7 +8,9 @@ var node_id = "name"
 var circle_usage = {} # Edge instance to circle index
 signal node_drag_started(node)
 signal node_drag_ended(node)
+signal node_position_changed(node)
 var drawing_scale = Vector2(1, 1)  # Default scale
+var last_position = Vector2.ZERO
 var radius_global = 0
 var NodeMenu = load("res://NodeMenu.tscn")
 
@@ -58,7 +60,13 @@ func get_rect() -> Rect2:
 func _process(delta):
 	if dragging:
 		var mouse_pos = get_viewport().get_mouse_position()
-		set_position(mouse_pos - drag_offset)
+		var new_position = mouse_pos - drag_offset
+		set_position(new_position)
+		
+		# Only emit signal if position actually changed
+		if position != last_position:
+			emit_signal("node_position_changed", self)
+			last_position = position
 
 var centrality_score = 0
 func _draw():
@@ -124,7 +132,7 @@ func make_offset_circles():
 
 
 func _ready():
-
+	last_position = position
 	add_to_group("nodes")
 	make_offset_circles()
 

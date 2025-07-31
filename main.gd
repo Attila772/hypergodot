@@ -3,14 +3,11 @@ extends Node2D
 
 var edges : Dictionary
 var nodes : Dictionary
+var node_to_edges = {}  # node_id -> [edge_instances]
 class NodeData:
 	var id = 0 # Node identifier
 	var edges = {} # Array to hold edge identifiers (based on line number or custom ID)
 	
-
-		
-		
-		
 func create_nodes(nodes: Dictionary):
 	var scene = load("res://HyperNode.tscn")
 	var row = 1
@@ -27,6 +24,9 @@ func create_nodes(nodes: Dictionary):
 		
 		# Set the edges property for the node
 		node_instance.edges = nodes[id].edges
+		
+		# Connect the position change signal
+		node_instance.connect("node_position_changed", _on_node_position_changed)
 	
 		# Add the node instance to the scene
 		add_child(node_instance)
@@ -37,6 +37,12 @@ func create_nodes(nodes: Dictionary):
 			column = 0
 			row += 1
 
+func _on_node_position_changed(node):
+	# Only mark edges that are connected to this node as dirty
+	if node_to_edges.has(node.node_id):
+		for edge_instance in node_to_edges[node.node_id]:
+			if edge_instance and edge_instance.has_method("mark_dirty"):
+				edge_instance.mark_dirty()
 
 func populate_edge_data(file_data):
 	var hyperedge_scene = load("res://HyperEdge.tscn")
@@ -148,6 +154,13 @@ func populate_edge_data(file_data):
 
 		# Add the hyperedge instance to the scene tree
 		add_child(hyperedge_instance)
+		
+		# Build node-to-edges mapping
+		for node_id in edge_data["nodes"]:
+			if not node_to_edges.has(node_id):
+				node_to_edges[node_id] = []
+			node_to_edges[node_id].append(hyperedge_instance)
+	
 	Global.edges = edges
 
 
@@ -179,14 +192,18 @@ func _ready():
 				print("Applied force-directed layout with parameters: ", parameters)
 			else:
 				print("Invalid parameters for force-directed layout: ", parameters)
-
 		"circular":
 			if parameters.size() == 1:
 				apply_circular_layout(parameters[0])
 				print("Applied circular layout with parameter: ", parameters[0])
 			else:
 				print("Invalid parameters for circular layout: ", parameters)
-
+		"radial":
+			if parameters.size() == 1:
+				apply_radial_layout(parameters[0],file_data)
+				print("Applied radial layout with radius step: ", parameters[0])
+			else:
+				print("Invalid parameters for radial layout: ", parameters)
 		_:
 			print("Unknown layout type: ", layout)
 
@@ -291,45 +308,87 @@ func apply_hyperedge_constrained_layout():
 	
 	
 func apply_force_directed_layout(iterations: int, repulsion_force: float, spring_length: float):
-	var node_positions = {} # Dictionary to store node positions temporarily
-	var forces = {} # Dictionary to store forces applied on nodes
+	var node_positions = {} # Szótár a csomópontok pozícióinak ideiglenes tárolására
+	var forces = {}         # Szótár a csomópontokra ható erők tárolására
 	
-	for node in get_children():
-		if node.is_in_group("nodes"): # Assuming your nodes are added to a "nodes" group
-			node_positions[node.node_id] = node.position
-			forces[node.node_id] = Vector2()
+	var all_nodes = []
+	for child in get_children():
+		if child.is_in_group("nodes"):
+			all_nodes.append(child)
 
+	if all_nodes.is_empty():
+		print("Nincsenek csomópontok az elrendezéshez.")
+		return
 
+	# Kezdeti pozíciók és erők inicializálása
+	for node in all_nodes:
+		node_positions[node.node_id] = node.position
+		forces[node.node_id] = Vector2.ZERO
+
+	# Iteratív erőszimuláció
 	for i in range(iterations):
-		# Calculate repulsive forces
-		for id_1 in node_positions.keys():
-			for id_2 in node_positions.keys():
-				if id_1 != id_2:
-					var delta = node_positions[id_1] - node_positions[id_2]
-					var distance = delta.length()
-					if distance > 0: # Avoid division by zero
-						var repulsive_force = repulsion_force / distance
-						forces[id_1] += delta.normalized() * repulsive_force
+		# --- 1. Vonzóerők számítása (ÚJ, SÚLYPONT-ALAPÚ LOGIKA) ---
+		var edge_centers = {} # Szótár a hiperélek középpontjainak tárolására
 
-		# Calculate spring forces (attractive forces) based on edges
+		# Először minden hiperél középpontját kiszámoljuk
 		for edge_id in edges:
-			for node_id in edges[edge_id]["nodes"]:
-				for other_node_id in edges[edge_id]["nodes"]:
-					if node_id != other_node_id:
-						var delta = node_positions[node_id] - node_positions[other_node_id]
-						var distance = delta.length() - spring_length
-						var spring_force = -distance # Assuming a simple linear spring
-						forces[node_id] += delta.normalized() * spring_force
+			var edge_data = edges[edge_id]
+			var center_pos = Vector2.ZERO
+			var node_count_in_edge = edge_data["nodes"].size()
+			
+			if node_count_in_edge > 0:
+				for node_id in edge_data["nodes"]:
+					if node_positions.has(node_id):
+						center_pos += node_positions[node_id]
+				center_pos /= node_count_in_edge
+				edge_centers[edge_id] = center_pos
 
-		# Apply forces to node positions
+		# Most alkalmazzuk a vonzóerőt a csomópontokra a középpontok felé
+		for edge_id in edges:
+			var edge_data = edges[edge_id]
+			if not edge_centers.has(edge_id):
+				continue
+
+			var center = edge_centers[edge_id]
+			for node_id in edge_data["nodes"]:
+				if forces.has(node_id):
+					var delta = center - node_positions[node_id]
+					var distance = delta.length()
+					
+					# A Hooke-törvényhez hasonló rugóerő
+					# A spring_length most a csomópont és a hiperél-középpont ideális távolsága
+					var displacement = distance - spring_length
+					var spring_force_magnitude = displacement * 0.1 # A 0.1 egy "rugóállandó", finomhangolható
+					
+					if distance > 0:
+						forces[node_id] += delta.normalized() * spring_force_magnitude
+
+		# --- 2. Taszítóerők számítása (VÁLTOZATLAN LOGIKA) ---
+		for j in range(all_nodes.size()):
+			for k in range(j + 1, all_nodes.size()):
+				var node1_id = all_nodes[j].node_id
+				var node2_id = all_nodes[k].node_id
+
+				var delta = node_positions[node1_id] - node_positions[node2_id]
+				var distance = delta.length()
+				
+				if distance > 0: # Elkerüljük a nullával való osztást
+					# Az erő a távolság négyzetével fordítottan arányos a realisztikusabb hatásért
+					var repulsive_force_magnitude = repulsion_force / (distance * distance)
+					var force_vector = delta.normalized() * repulsive_force_magnitude
+					
+					forces[node1_id] += force_vector
+					forces[node2_id] -= force_vector # Egyenlő és ellentétes erő
+
+		# --- 3. Erők alkalmazása és pozíciók frissítése ---
+		var damping = 0.9 # Csillapítás, hogy a rendszer stabilizálódjon és ne "robbanjon szét"
 		for node_id in node_positions.keys():
-			node_positions[node_id] += forces[node_id]/20
-			forces[node_id] = Vector2() # Reset forces for the next iteration
+			node_positions[node_id] += forces[node_id] * damping
+			forces[node_id] = Vector2.ZERO # Erők nullázása a következő iterációhoz
 
-	# Update actual node positions
-	for node in get_children():
-		if node.is_in_group("nodes"):
-			node.position = node_positions[node.node_id]
+	# Végleges pozíciók beállítása a szimuláció után
+	for node in all_nodes:
+		node.position = node_positions[node.node_id]
 			
 			
 			
@@ -370,6 +429,104 @@ func calculate_centrality_and_resize_nodes(file_data):
 			var normalized_centrality = float(centrality_scores[node_id]) / max_centrality
 			node_instance.update_size(normalized_centrality, normalized_centrality)
 
-		
-		
-		
+
+func apply_radial_layout(radius_step: float, file_data):
+	# A csomópontokat egy egyszerű listában gyűjtjük, a circular_layout mintájára.
+	var all_node_instances = []
+	for child in get_children():
+		if child.is_in_group("nodes"):
+			all_node_instances.append(child)
+
+	if all_node_instances.is_empty():
+		print("Hiba: Nincsenek csomópontok a radiális elrendezéshez.")
+		return
+
+	# A gráf szerkezetének beolvasása a fájlból a megbízhatóság érdekében.
+
+	var nodes_data = file_data["nodes"]
+	var edges_data = file_data["edges"]
+	print(nodes_data)
+	if nodes_data.is_empty() or edges_data.is_empty():
+		print("Hiba: A fájlból beolvasott gráf adatok üresek.")
+		return
+
+	# --- 1. A legcentrálisabb csomópont megkeresése ---
+	var central_node_id = ""
+	var max_degree = -1
+	for node_id in nodes_data:
+		var degree = nodes_data[node_id].edges.size()
+		if degree > max_degree:
+			max_degree = degree
+			central_node_id = node_id
+
+	if central_node_id == "":
+		print("Nem található központi csomópont.")
+		return
+
+	# --- 2. Szélességi bejárás (BFS) a távolságokhoz ---
+	var levels = {} # node_id -> távolság a centrumtól
+	var queue = [[central_node_id, 0]]
+	var visited = {central_node_id: true}
+	levels[central_node_id] = 0
+
+	var adjacency_list = {}
+	for edge_data in edges_data.values():
+		var edge_node_list = edge_data["nodes"]
+		for i in range(edge_node_list.size()):
+			var node_id = edge_node_list[i]
+			if not adjacency_list.has(node_id):
+				adjacency_list[node_id] = []
+			for j in range(edge_node_list.size()):
+				if i != j:
+					var other_node_id = edge_node_list[j]
+					if other_node_id not in adjacency_list[node_id]:
+						adjacency_list[node_id].append(other_node_id)
+	
+	var head = 0
+	while head < queue.size():
+		var current_pair = queue[head]
+		head += 1
+		var current_id = current_pair[0]
+		var current_level = current_pair[1]
+
+		if adjacency_list.has(current_id):
+			for neighbor_id in adjacency_list[current_id]:
+				if not visited.has(neighbor_id):
+					visited[neighbor_id] = true
+					levels[neighbor_id] = current_level + 1
+					queue.append([neighbor_id, current_level + 1])
+
+	# Csomópont objektumok csoportosítása szintenként
+	var nodes_by_level = {}
+	for node_instance in all_node_instances:
+		var level = levels.get(node_instance.node_id, -1)
+		if not nodes_by_level.has(level):
+			nodes_by_level[level] = []
+		nodes_by_level[level].append(node_instance)
+
+	# --- 3. Pozíciók kiosztása ---
+	var center = get_viewport_rect().size / 2
+	
+	# A központi csomópont középre kerül
+	if nodes_by_level.has(0) and not nodes_by_level[0].is_empty():
+		nodes_by_level[0][0].position = center
+
+	# A többi csomópont a körökre
+	for level in nodes_by_level:
+		if level <= 0:
+			continue
+			
+		var nodes_on_this_level = nodes_by_level[level]
+		var node_count = nodes_on_this_level.size()
+		if node_count == 0:
+			continue
+			
+		var radius = level * radius_step
+		var angle_step = (2 * PI) / node_count
+
+		for i in range(node_count):
+			var node = nodes_on_this_level[i] # Itt már közvetlenül a node objektumot használjuk
+			var angle = i * angle_step
+			var x = center.x + radius * cos(angle)
+			var y = center.y + radius * sin(angle)
+			node.position = Vector2(x, y)

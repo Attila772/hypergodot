@@ -52,5 +52,6 @@ left_click={
 anti_aliasing/quality/msaa_2d=3
 anti_aliasing/quality/msaa_3d=3
 anti_aliasing/screen_space_roughness_limiter/amount=0.55
+environment/defaults/default_clear_color=Color(1, 1, 1, 1)
 anti_aliasing/quality/screen_space_aa=1
 anti_aliasing/quality/use_taa=true

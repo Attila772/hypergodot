@@ -1,8 +1,8 @@
 extends Camera2D
 # Customize these values as needed
 var zoom_speed: float = 0.01
-var min_zoom: float = 0.5
-var max_zoom: float = 2.0
+var min_zoom: float = 0.1
+var max_zoom: float = 5.0
 var dragging: bool = false
 var drag_last_position: Vector2
 
@@ -49,6 +49,13 @@ func _on_button_button_up() -> void:
 	get_parent().get_node("CanvasLayer2").get_node("Button").visible = false
 	# Enable high-quality mode
 	Global.high_quality = true
+	
+	# Force all edges to redraw with high quality
+	var edges = get_tree().get_nodes_in_group("edges")
+	for edge in edges:
+		if edge.has_method("mark_dirty"):
+			edge.mark_dirty()
+	
 	queue_redraw()
 	await RenderingServer.frame_post_draw  # Wait for the high-quality redraw
 
